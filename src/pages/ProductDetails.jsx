@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import ProductItem from "../components/ProductItem";
 import Loading from "../components/Loading"
+import requests from "../api/apiClient";
 
 export default function ProductDetailsPage() {
   const { id } = useParams();
@@ -11,8 +12,7 @@ export default function ProductDetailsPage() {
     () =>
       async function fetchProductDetails() {
         try {
-          const response = await fetch("http://localhost:5001/products/" + id);
-          const data = await response.json();
+          const data = await requests.products.details(id);
           setProduct(data);
         } catch (error) {
           console.log(error);
