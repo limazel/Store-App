@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react";
-import requests from "../api/apiClient";
 import {
   IconButton,
   Paper,
@@ -13,22 +11,12 @@ import {
 } from "@mui/material";
 import { currencyTRY } from "../utils/formats";
 import DeleteIcon from "@mui/icons-material/Delete";
-import Loading from "../components/Loading";
+import { useCartContext } from "../context/CartContext";
 
 export default function CartPage() {
-  const [cart, setCart] = useState(null);
-  const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    requests.cart
-      .get()
-      .then((cart) => setCart(cart))
-      .catch((error) => console.log(error))
-     .finally(() => setLoading(false)) 
-  }, []);
+  const { cart } = useCartContext();
 
-  if(loading) return <Loading message="Sepetiniz Güncelleniyor" />
-
-  if (!cart)
+  if (!cart || cart.cartItems.length === 0)
     return <Typography component="h4">Sepetinizde ürün yok.</Typography>;
   return (
     <TableContainer component={Paper}>

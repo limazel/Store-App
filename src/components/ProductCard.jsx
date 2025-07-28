@@ -9,20 +9,23 @@ import {
   IconButton,
   Typography,
 } from "@mui/material";
-import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import { Link } from "react-router";
 import { currencyTRY } from "../utils/formats";
 import requests from "../api/apiClient";
 import { useState } from "react";
+import { useCartContext } from "../context/CartContext";
 
 export default function ProductCard({ product }) {
+
   const [loading, setLoading] = useState(false);
+  const {setCart} = useCartContext();
+
   function handleAddItem(productId) {
     setLoading(true);
     requests.cart
       .addItem(productId)
-      .then((cart) => console.log(cart))
+      .then((cart) => setCart(cart))
       .catch((error) => console.log(error))
       .finally(() => setLoading(false));
   }
