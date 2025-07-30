@@ -15,17 +15,19 @@ import { currencyTRY } from "../utils/formats";
 import requests from "../api/apiClient";
 import { useState } from "react";
 import { useCartContext } from "../context/CartContext";
+import { useDispatch } from "react-redux";
+import { setCart } from "../pages/cart/cartSlice";
 
 export default function ProductCard({ product }) {
 
   const [loading, setLoading] = useState(false);
-  const {setCart} = useCartContext();
+  const dispatch = useDispatch();
 
   function handleAddItem(productId) {
     setLoading(true);
     requests.cart
       .addItem(productId)
-      .then((cart) => setCart(cart))
+      .then((cart) => dispatch(setCart(cart)))
       .catch((error) => console.log(error))
       .finally(() => setLoading(false));
   }
