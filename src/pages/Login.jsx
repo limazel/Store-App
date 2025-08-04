@@ -1,8 +1,25 @@
 import Avatar from "@mui/material/Avatar";
-import { Box, Button, Container, Paper, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Container,
+  Paper,
+  TextField,
+  Typography,
+} from "@mui/material";
 import LockOutlined from "@mui/icons-material/LockOutlined";
+import { useForm } from "react-hook-form";
 
 export default function LoginPage() {
+  const { register, handleSubmit } = useForm({
+    defaultValues: {
+      username: "user",
+      password: "12345",
+    },
+  });
+  const handleFormSubmit = (data) => {
+    console.log("Form submitted with data:", data);
+  };
   return (
     <Container maxWidth="xs">
       <Paper sx={{ padding: 2 }} elevation={3}>
@@ -16,9 +33,13 @@ export default function LoginPage() {
         >
           Login
         </Typography>
-        <Box component="form" sx={{ mb: 2 }}>
+        <Box
+          onSubmit={handleSubmit(handleFormSubmit)}
+          component="form"
+          sx={{ mb: 2 }}
+        >
           <TextField
-            name="username"
+            {...register("username")}
             label="Enter username"
             size="small"
             fullWidth
@@ -27,7 +48,7 @@ export default function LoginPage() {
             sx={{ mb: 2 }}
           />
           <TextField
-            name="password"
+            {...register("password")}
             type="password"
             label="Enter password"
             size="small"
@@ -35,7 +56,9 @@ export default function LoginPage() {
             required
             sx={{ mb: 2 }}
           />
-          <Button type="submit" variant="contained" fullWidth color="secondary">Submit</Button>
+          <Button type="submit" variant="contained" fullWidth color="secondary">
+            Submit
+          </Button>
         </Box>
       </Paper>
     </Container>
