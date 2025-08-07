@@ -9,8 +9,11 @@ import {
 } from "@mui/material";
 import LockOutlined from "@mui/icons-material/LockOutlined";
 import { useForm } from "react-hook-form";
+import requests from "../api/apiClient";
+import { useNavigate } from "react-router";
 
 export default function LoginPage() {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -25,7 +28,14 @@ export default function LoginPage() {
   console.log(errors);
 
   const handleFormSubmit = (data) => {
-    console.log("Form submitted with data:", data);
+    requests.account
+      .login(data)
+      .then((result) => {
+        console.log(result);
+        localStorage.setItem("user", JSON.stringify(result))
+        navigate("/");
+      })
+      .catch((error) => console.log(error));
   };
   return (
     <Container maxWidth="xs">
