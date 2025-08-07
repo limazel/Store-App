@@ -14,25 +14,25 @@ axios.interceptors.response.use(
     switch (status) {
       case 400:
         toast.error(data.message);
-        break
+        break;
       case 401:
         toast.error(data.message);
-        break
+        break;
       case 403:
-        if(errors) {
+        if (errors) {
           const errors = [];
 
-          for(const key in data.errors) {
-            errors.push(data.errors[key])
+          for (const key in data.errors) {
+            errors.push(data.errors[key]);
           }
 
           let result = {
             errors: errors,
             message: data.message,
-          }
+          };
           throw result;
         }
-        break
+        break;
       case 404:
         router.navigate("/errors/not-found");
         break;
@@ -65,8 +65,7 @@ const errors = {
     methods.get("errors/bad-request").catch((error) => console.log(error)),
   get401Error: () =>
     methods.get("errors/unauthorized").catch((error) => console.log(error)),
-  get403Error: () =>
-    methods.get("errors/validation-error"),
+  get403Error: () => methods.get("errors/validation-error"),
   get404Error: () =>
     methods.get("errors/not-found").catch((error) => console.log(error)),
   get500Error: () =>
@@ -75,14 +74,23 @@ const errors = {
 
 const cart = {
   get: () => methods.get("carts"),
-  addItem: (productId, quantity = 1) => methods.post(`carts?productId=${productId}&quantity=${quantity}`, {}),
-  deleteItem: (productId, quantity = 1) => methods.delete(`carts?productId=${productId}&quantity=${quantity}`)
-}
+  addItem: (productId, quantity = 1) =>
+    methods.post(`carts?productId=${productId}&quantity=${quantity}`, {}),
+  deleteItem: (productId, quantity = 1) =>
+    methods.delete(`carts?productId=${productId}&quantity=${quantity}`),
+};
+
+const account = {
+  login: (formData) => methods.post("users/login", formData),
+  register: (formData) => methods.post("users/register", formData),
+  getUser: () => methods.post("users/getUser"),
+};
 
 const requests = {
   products,
   errors,
-  cart
+  cart,
+  account
 };
 
 export default requests;

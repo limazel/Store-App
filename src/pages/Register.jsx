@@ -1,8 +1,41 @@
 import Avatar from "@mui/material/Avatar";
-import { Box, Button, Container, Paper, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Container,
+  Paper,
+  TextField,
+  Typography,
+} from "@mui/material";
 import LockOutlined from "@mui/icons-material/LockOutlined";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router";
+import requests from "../api/apiClient";
 
 export default function RegisterPage() {
+  const navigate = useNavigate();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm({
+    defaultValues: {
+      username: "",
+      email: "",
+      password: "",
+    },
+  });
+
+  console.log(errors);
+
+  const handleFormSubmit = (data) => {
+    requests.account
+      .register(data)
+      .then((result) => {
+        console.log(result), navigate("/login");
+      })
+      .catch((error) => console.log(error));
+  };
   return (
     <Container maxWidth="xs">
       <Paper sx={{ padding: 2 }} elevation={3}>
@@ -16,34 +49,70 @@ export default function RegisterPage() {
         >
           Register
         </Typography>
-        <Box component="form" sx={{ mb: 2 }}>
+        <Box
+          onSubmit={handleSubmit(handleFormSubmit)}
+          component="form"
+          noValidate
+          sx={{ mb: 2 }}
+        >
           <TextField
-            name="username"
+            {...register("username", {
+              required: "Username zorunlu alan",
+              minLength: {
+                value: 3,
+                message: "Username en az 3 karakter olmalı",
+              },
+            })}
             label="Enter username"
             size="small"
             fullWidth
-            required
             autoFocus
             sx={{ mb: 2 }}
+            error={!!errors.username}
+            helperText={errors.username?.message}
           />
+
           <TextField
-            name="email"
+            {...register("email", {
+              required: "Email zorunlu alan",
+              minLength: {
+                value: 3,
+                message: "Email en az 3 karakter olmalı",
+              },
+            })}
             label="Enter email"
             size="small"
             fullWidth
-            required
             sx={{ mb: 2 }}
+            error={!!errors.email}
+            helperText={errors.email?.message}
           />
+
           <TextField
-            name="password"
+            {...register("password", {
+              required: "Password zorunlu alan",
+              minLength: {
+                value: 6,
+                message: "Password en az 6 karakter olmalı",
+              },
+            })}
             type="password"
             label="Enter password"
             size="small"
             fullWidth
-            required
             sx={{ mb: 2 }}
+            error={!!errors.username}
+            helperTExt={errors.password?.message}
           />
-          <Button type="submit" variant="contained" fullWidth color="secondary">Submit</Button>
+          <Button
+            type="submit"
+            variant="contained"
+            fullWidth
+            color="secondary"
+            disabled={!isValid}
+          >
+            Submit
+          </Button>
         </Box>
       </Paper>
     </Container>

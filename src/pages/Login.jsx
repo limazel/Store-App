@@ -11,12 +11,19 @@ import LockOutlined from "@mui/icons-material/LockOutlined";
 import { useForm } from "react-hook-form";
 
 export default function LoginPage() {
-  const { register, handleSubmit } = useForm({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm({
     defaultValues: {
-      username: "user",
-      password: "12345",
+      username: "",
+      password: "",
     },
   });
+
+  console.log(errors);
+
   const handleFormSubmit = (data) => {
     console.log("Form submitted with data:", data);
   };
@@ -36,27 +43,48 @@ export default function LoginPage() {
         <Box
           onSubmit={handleSubmit(handleFormSubmit)}
           component="form"
+          noValidate
           sx={{ mb: 2 }}
         >
           <TextField
-            {...register("username")}
+            {...register("username", {
+              required: "Username zorunlu alan",
+              minLength: {
+                value: 3,
+                message: "Username en az 3 karakter olmalı",
+              },
+            })}
             label="Enter username"
             size="small"
             fullWidth
-            required
             autoFocus
             sx={{ mb: 2 }}
+            error={!!errors.username}
+            helperText={errors.username?.message}
           />
           <TextField
-            {...register("password")}
+            {...register("password", {
+              required: "Password zorunlu alan",
+              minLength: {
+                value: 6,
+                message: "Password en az 6 karakter olmalı",
+              },
+            })}
             type="password"
             label="Enter password"
             size="small"
             fullWidth
-            required
             sx={{ mb: 2 }}
+            error={!!errors.username}
+            helperTExt={errors.password?.message}
           />
-          <Button type="submit" variant="contained" fullWidth color="secondary">
+          <Button
+            type="submit"
+            variant="contained"
+            fullWidth
+            color="secondary"
+            disabled={!isValid}
+          >
             Submit
           </Button>
         </Box>
