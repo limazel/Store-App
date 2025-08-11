@@ -10,7 +10,7 @@ import {
 import LockOutlined from "@mui/icons-material/LockOutlined";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
-import requests from "../api/apiClient";
+import requests from "../../api/apiClient";
 
 export default function RegisterPage() {
   const navigate = useNavigate();

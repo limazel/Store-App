@@ -9,11 +9,14 @@ import {
 } from "@mui/material";
 import LockOutlined from "@mui/icons-material/LockOutlined";
 import { useForm } from "react-hook-form";
-import requests from "../api/apiClient";
+import requests from "../../api/apiClient";
 import { useNavigate } from "react-router";
+import { useDispatch } from "react-redux";
+import { setUser } from "./accountSlice";
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const {
     register,
     handleSubmit,
@@ -32,7 +35,8 @@ export default function LoginPage() {
       .login(data)
       .then((result) => {
         console.log(result);
-        localStorage.setItem("user", JSON.stringify(result))
+        localStorage.setItem("user", JSON.stringify(result));
+        dispatch(setUser(result));
         navigate("/");
       })
       .catch((error) => console.log(error));
