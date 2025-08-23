@@ -1,5 +1,4 @@
 import { createBrowserRouter, RouterProvider } from "react-router";
-import MainLayout from "./layouts/Main";
 import HomePage from "./pages/Home";
 import ProductsPage from "./pages/Products";
 import ProductDetailsPage from "./pages/ProductDetails";
@@ -14,6 +13,7 @@ import requests from "./api/apiClient";
 import { useDispatch } from "react-redux";
 import { setCart } from "./pages/cart/cartSlice";
 import { logout, setUser } from "./pages/account/accountSlice";
+import MainLayout from "./layouts/Main";
 
 export const router = createBrowserRouter([
   {

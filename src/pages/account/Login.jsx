@@ -2,6 +2,7 @@ import Avatar from "@mui/material/Avatar";
 import {
   Box,
   Button,
+  CircularProgress,
   Container,
   Paper,
   TextField,
@@ -9,14 +10,12 @@ import {
 } from "@mui/material";
 import LockOutlined from "@mui/icons-material/LockOutlined";
 import { useForm } from "react-hook-form";
-import requests from "../../api/apiClient";
-import { useNavigate } from "react-router";
-import { useDispatch } from "react-redux";
-import { setUser } from "./accountSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser } from "./accountSlice";
 
 export default function LoginPage() {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { status } = useSelector((state) => state.account);
   const {
     register,
     handleSubmit,
@@ -28,19 +27,9 @@ export default function LoginPage() {
     },
   });
 
-  console.log(errors);
-
-  const handleFormSubmit = (data) => {
-    requests.account
-      .login(data)
-      .then((result) => {
-        console.log(result);
-        localStorage.setItem("user", JSON.stringify(result));
-        dispatch(setUser(result));
-        navigate("/");
-      })
-      .catch((error) => console.log(error));
-  };
+  function handleForm(data) {
+    dispatch(loginUser(data));
+  }
   return (
     <Container maxWidth="xs">
       <Paper sx={{ padding: 2 }} elevation={3}>
@@ -55,7 +44,7 @@ export default function LoginPage() {
           Login
         </Typography>
         <Box
-          onSubmit={handleSubmit(handleFormSubmit)}
+          onSubmit={handleSubmit(handleForm)}
           component="form"
           noValidate
           sx={{ mb: 2 }}
@@ -99,7 +88,8 @@ export default function LoginPage() {
             color="secondary"
             disabled={!isValid}
           >
-            Submit
+            {status === "pending" ? <CircularProgress size="25px" /> : "Submit"}
+            ;
           </Button>
         </Box>
       </Paper>

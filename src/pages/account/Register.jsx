@@ -2,6 +2,7 @@ import Avatar from "@mui/material/Avatar";
 import {
   Box,
   Button,
+  CircularProgress,
   Container,
   Paper,
   TextField,
@@ -9,11 +10,13 @@ import {
 } from "@mui/material";
 import LockOutlined from "@mui/icons-material/LockOutlined";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router";
-import requests from "../../api/apiClient";
+import { useDispatch, useSelector } from "react-redux";
+import { registerUser } from "./accountSlice";
 
 export default function RegisterPage() {
-  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { status } = useSelector((state) => state.account);
+
   const {
     register,
     handleSubmit,
@@ -26,16 +29,10 @@ export default function RegisterPage() {
     },
   });
 
-  console.log(errors);
+  function handleForm(data) {
+    dispatch(registerUser(data));
+  }
 
-  const handleFormSubmit = (data) => {
-    requests.account
-      .register(data)
-      .then((result) => {
-        console.log(result), navigate("/login");
-      })
-      .catch((error) => console.log(error));
-  };
   return (
     <Container maxWidth="xs">
       <Paper sx={{ padding: 2 }} elevation={3}>
@@ -50,7 +47,7 @@ export default function RegisterPage() {
           Register
         </Typography>
         <Box
-          onSubmit={handleSubmit(handleFormSubmit)}
+          onSubmit={handleSubmit(handleForm)}
           component="form"
           noValidate
           sx={{ mb: 2 }}
@@ -111,7 +108,7 @@ export default function RegisterPage() {
             color="secondary"
             disabled={!isValid}
           >
-            Submit
+            {status === "pending" ? <CircularProgress size="25px" /> : "Submit"}
           </Button>
         </Box>
       </Paper>
