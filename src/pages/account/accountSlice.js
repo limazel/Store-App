@@ -45,6 +45,11 @@ export const getUser = createAsyncThunk(
     } catch (error) {
       return thunkAPI.rejectWithValue({ message });
     }
+  },
+  {
+    condition: () => {
+      if (!localStorage.getItem("user")) return false;
+    },
   }
 );
 
@@ -84,7 +89,7 @@ export const accountSlice = createSlice({
     });
 
     builder.addCase(getUser.fulfilled, (state, action) => {
-      state.user = action.payload
+      state.user = action.payload;
     });
     builder.addCase(getUser.rejected, (state) => {
       state.user = null;
