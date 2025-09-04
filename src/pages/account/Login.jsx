@@ -89,7 +89,6 @@ export default function LoginPage() {
             disabled={!isValid}
           >
             {status === "pending" ? <CircularProgress size="25px" /> : "Submit"}
-            ;
           </Button>
         </Box>
       </Paper>
