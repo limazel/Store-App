@@ -1,4 +1,5 @@
 import {
+  Alert,
   Box,
   Button,
   CircularProgress,
@@ -32,7 +33,7 @@ export default function CartPage() {
   const total = subTotal + tax;
 
   if (!cart || cart.cartItems.length === 0)
-    return <Typography component="h4">Sepetinizde ürün yok.</Typography>;
+    return <Alert severity="warning">Sepetinizde ürün yok.</Alert>;
 
   return (
     <>
@@ -145,10 +146,20 @@ export default function CartPage() {
         </Table>
       </TableContainer>
       <Box sx={{ display: "flex", justifyContent: "space-between", my: 3 }}>
-        <Button component={Link} variant="contained" to="/products" color="primary">
+        <Button
+          component={Link}
+          variant="contained"
+          to="/products"
+          color="primary"
+        >
           Continue Shopping
         </Button>
-        <Button component={Link} variant="contained" to="/checkout" color="secondary">
+        <Button
+          component={Link}
+          variant="contained"
+          to="/checkout"
+          color="secondary"
+        >
           Checkout
         </Button>
       </Box>

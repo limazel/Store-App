@@ -17,6 +17,7 @@ import MainLayout from "./layouts/Main";
 import Loading from "./components/Loading";
 import CheckoutPage from "./pages/checkout/Checkout";
 import AuthGuard from "./auth/AuthGuard";
+import OrdersPage from "./pages/orders/Orders";
 
 export const router = createBrowserRouter([
   {
@@ -37,7 +38,10 @@ export const router = createBrowserRouter([
       { path: "register", element: <RegisterPage /> },
       {
         element: <AuthGuard />,
-        children: [{ path: "checkout", element: <CheckoutPage /> }],
+        children: [
+          { path: "checkout", element: <CheckoutPage /> },
+          { path: "orders", element: <OrdersPage /> },
+        ],
       },
       {
         path: "errors",
