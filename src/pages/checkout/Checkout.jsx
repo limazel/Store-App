@@ -7,6 +7,8 @@ import {
   Box,
   Button,
   Typography,
+  Stack,
+  CircularProgress,
 } from "@mui/material";
 import Info from "./Info";
 import AddressForm from "./AddressForm";
@@ -15,6 +17,9 @@ import Review from "./Review";
 import { useState } from "react";
 import { ChevronLeftRounded, ChevronRightRounded } from "@mui/icons-material";
 import { FormProvider, useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
+import requests from "../../api/apiClient";
+import { clearCart } from "../cart/cartSlice";
 
 const steps = ["Teslimat Bilgileri", "Ödeme", "Sipariş Özeti"];
 
@@ -32,28 +37,44 @@ function getStepContent(step) {
 export default function CheckoutPage() {
   const [activeStep, setActiveStep] = useState(0);
   const methods = useForm();
+  const [orderId, setOrderId] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
 
   function handlePrevious() {
     setActiveStep(activeStep - 1);
   }
-  function handleNext() {
+  async function handleNext(data) {
     if (activeStep === 2) {
-        // siparisi tamamla
-    } else {
+      setLoading(true);
+      try {
+        const result = await requests.orders.createOrder(data);
+        setOrderId(result.orderId);
         setActiveStep(activeStep + 1);
+        dispatch(clearCart());
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      setActiveStep(activeStep + 1);
     }
   }
   return (
     <FormProvider {...methods}>
       <Paper>
         <Grid container spacing={3}>
-          <Grid
-            size={4}
-            sx={{ p: 3, borderRight: "1px solid ", borderColor: "divider" }}
-          >
-            <Info />
-          </Grid>
-          <Grid size={8} sx={{ p: 3 }}>
+          {activeStep !== steps.length && (
+            <Grid
+              size={4}
+              sx={{ p: 3, borderRight: "1px solid ", borderColor: "divider" }}
+            >
+              <Info />
+            </Grid>
+          )}
+
+          <Grid size={activeStep !== steps.length ?  8 : 12} sx={{ p: 3 }}>
             <Stepper activeStep={activeStep} sx={{ height: 40, mb: 4 }}>
               {steps.map((label) => (
                 <Step key={label} sx={{ color: "secondary" }}>
@@ -62,7 +83,20 @@ export default function CheckoutPage() {
               ))}
             </Stepper>
             {activeStep === steps.length ? (
-              <Typography variant="h5">Siparişinizi aldık.</Typography>
+              <Stack>
+                <Typography variant="h5">Siparişinizi aldık.</Typography>
+                <Typography variant="body1" gutterBottom>
+                  Sipariş numaranız <strong>{orderId}</strong>. Sipariş
+                  onaylandığında size bir eposta göndereceğiz.
+                </Typography>
+                <Button
+                  sx={{ alignSelf: "start" }}
+                  variant="contained"
+                  color="secondary"
+                >
+                  Siparişleri listele
+                </Button>
+              </Stack>
             ) : (
               <form onSubmit={methods.handleSubmit(handleNext)}>
                 {getStepContent(activeStep)}
@@ -93,7 +127,13 @@ export default function CheckoutPage() {
                     variant="contained"
                     color="secondary"
                   >
-                    {activeStep === 2 ? "Siparişi Tamamla" : "İleri"}
+                    {loading ? (
+                      <CircularProgress />
+                    ) : activeStep === 2 ? (
+                      "Siparişi Tamamla"
+                    ) : (
+                      "İleri"
+                    )}
                   </Button>
                 </Box>
               </form>

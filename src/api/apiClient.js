@@ -10,7 +10,7 @@ axios.interceptors.request.use((request) => {
   const token = store.getState().account.user?.token;
   if (token) request.headers.Authorization = `Bearer ${token}`;
   return request;
-})
+});
 
 axios.interceptors.response.use(
   (response) => {
@@ -93,11 +93,18 @@ const account = {
   getUser: () => methods.get("users/getUser"),
 };
 
+const orders = {
+  getOrders: () => methods.get("orders"),
+  getOrder: (id) => methods.get(`orders/${id}`),
+  createOrder: (formData) => methods.post("orders", formData),
+};
+
 const requests = {
   products,
   errors,
   cart,
-  account
+  account,
+  orders,
 };
 
 export default requests;
